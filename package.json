@@ -2,8 +2,9 @@
   "name": "flowtypify",
   "version": "0.0.1",
   "description": "Generate flowtype definitions from JSON Schemata",
+  "bin": "dist/cli.js",
   "main": "dist/index.js",
-  "module": "dist/flowtypify.esm.js",
+  "module": "dist/index.esm.js",
   "scripts": {
     "build": "npm-run-all -s test flow build:clean build:js build:flow",
     "build:js": "rollup -c",

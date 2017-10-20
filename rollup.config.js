@@ -14,5 +14,17 @@ export default [
         exclude: ['node_modules/**']
       })
     ]
+  },
+  {
+    input: 'src/cli.js',
+    output: [
+      { file: pkg.bin, format: 'cjs' }
+    ],
+    external: ['fs', 'prettier'],
+    plugins: [
+      babel({
+        exclude: ['node_modules/**']
+      })
+    ]
   }
 ];
