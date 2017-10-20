@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "type": "object",
+  "$ref": "#/definitions/Node",
+  "definitions": {
+    "Node": {
+      "type": "object",
+      "properties": {
+        "parent": { "$ref": "#/definitions/Node"}
+      }
+    }
+  }
+}
