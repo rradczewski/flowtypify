@@ -1,3 +1,3 @@
 export default {
-  RootType: { "requiredProp": "string", "optionalProp?": "string" }
+  RootType: '{ requiredProp: string, optionalProp?: string } & Object'
 }

@@ -1,0 +1,40 @@
+{
+  "plugins": [
+    "transform-class-properties",
+    ["transform-object-rest-spread", { "useBuiltIns": false }]
+  ],
+  "presets": [
+    "flow",
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": ["last 2 versions"],
+          "node": "v4.8.4"
+        },
+        "modules": false
+      }
+    ]
+  ],
+
+  "env": {
+    "test": {
+      "plugins": [
+        "transform-class-properties",
+        ["transform-object-rest-spread", { "useBuiltIns": false }]
+      ],
+      "presets": [
+        [
+          "env",
+          {
+            "targets": {
+              "browsers": ["last 2 versions"],
+              "node": "v4.8.4"
+            },
+            "modules": "commonjs"
+          }
+        ]
+      ]
+    }
+  }
+}
