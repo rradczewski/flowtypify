@@ -1,0 +1,49 @@
+{
+  "name": "flowtypify",
+  "version": "0.0.1",
+  "description": "Generate flowtype definitions from JSON Schemata",
+  "main": "dist/index.js",
+  "module": "dist/flowtypify.esm.js",
+  "scripts": {
+    "build": "npm-run-all -s test flow build:clean build:js build:flow",
+    "build:js": "rollup -c",
+    "build:clean": "rimraf dist",
+    "build:flow": "flow-copy-source -v src dist",
+    "watch:build": "rollup -c -w",
+    "watch:flow": "nodemon -w src --exec yarn flow -- check",
+    "flow": "flow",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rradczewski/flowtypify.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "author": "Raimo Radczewski <raimoradczewski@googlemail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rradczewski/flowtypify/issues"
+  },
+  "homepage": "https://github.com/rradczewski/flowtypify#readme",
+  "devDependencies": {
+    "babel-jest": "^21.2.0",
+    "babel-plugin-syntax-flow": "^6.18.0",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-flow": "^6.23.0",
+    "flow-bin": "^0.57.3",
+    "flow-copy-source": "^1.2.1",
+    "jest": "^21.2.1",
+    "nodemon": "^1.12.1",
+    "npm-run-all": "^4.1.1",
+    "rimraf": "^2.6.2",
+    "rollup": "^0.50.0",
+    "rollup-plugin-babel": "^3.0.2",
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-node-resolve": "^3.0.0"
+  },
+  "dependencies": {}
+}
