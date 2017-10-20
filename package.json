@@ -45,5 +45,7 @@
     "rollup-plugin-commonjs": "^8.0.2",
     "rollup-plugin-node-resolve": "^3.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "prettier": "^1.7.4"
+  }
 }
