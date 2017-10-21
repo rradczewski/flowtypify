@@ -1,6 +1,12 @@
+import 'babel-polyfill';
+import { equals } from 'ramda';
 import prettier from 'prettier';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -20,6 +26,11 @@ var SimpleType = function () {
     key: 'toString',
     value: function toString() {
       return 'SimpleType(' + this.typeName + ')';
+    }
+  }, {
+    key: 'equals',
+    value: function equals$$1(o) {
+      return o instanceof SimpleType && equals(this.typeName, o.typeName);
     }
   }]);
 
@@ -51,6 +62,11 @@ var UnionType = function () {
         return childType.toString();
       }).join(', ') + ')';
     }
+  }, {
+    key: 'equals',
+    value: function equals$$1(o) {
+      return o instanceof UnionType && equals(this.childTypes, o.childTypes);
+    }
   }]);
 
   return UnionType;
@@ -81,6 +97,11 @@ var EnumType = function () {
         return childType.toString();
       }).join(', ') + ')';
     }
+  }, {
+    key: 'equals',
+    value: function equals$$1(o) {
+      return o instanceof EnumType && equals(this.childTypes, o.childTypes);
+    }
   }]);
 
   return EnumType;
@@ -102,6 +123,11 @@ var ArrayType = function () {
     key: 'toString',
     value: function toString() {
       return 'Array(' + this.itemType.toString() + ')';
+    }
+  }, {
+    key: 'equals',
+    value: function equals$$1(o) {
+      return o instanceof ArrayType && equals(this.itemType, o.itemType);
     }
   }]);
 
@@ -125,10 +151,27 @@ var OptionalType = function () {
     value: function toString() {
       return 'Optional(' + this.childType.toString() + ')';
     }
+  }, {
+    key: 'equals',
+    value: function equals$$1(o) {
+      return o instanceof OptionalType && equals(this.childType, o.childType);
+    }
   }]);
 
   return OptionalType;
 }();
+
+var UnsealedObjectType = function (_UnionType) {
+  _inherits(UnsealedObjectType, _UnionType);
+
+  function UnsealedObjectType(objectType) {
+    _classCallCheck(this, UnsealedObjectType);
+
+    return _possibleConstructorReturn(this, (UnsealedObjectType.__proto__ || Object.getPrototypeOf(UnsealedObjectType)).call(this, objectType, new SimpleType("Object")));
+  }
+
+  return UnsealedObjectType;
+}(UnionType);
 
 var ObjectType = function () {
   function ObjectType(properties) {
@@ -140,20 +183,25 @@ var ObjectType = function () {
   _createClass(ObjectType, [{
     key: 'render',
     value: function render() {
-      var _this = this;
+      var _this2 = this;
 
       return '{ ' + Object.keys(this.properties).map(function (key) {
-        return key + ': ' + _this.properties[key].render();
+        return key + ': ' + _this2.properties[key].render();
       }).join(', ') + ' }';
     }
   }, {
     key: 'toString',
     value: function toString() {
-      var _this2 = this;
+      var _this3 = this;
 
       return 'Object(' + Object.keys(this.properties).map(function (key) {
-        return key + ': ' + _this2.properties[key].toString();
+        return key + ': ' + _this3.properties[key].toString();
       }).join(', ') + ')';
+    }
+  }, {
+    key: 'equals',
+    value: function equals$$1(o) {
+      return o instanceof ObjectType && equals(this.properties, o.properties);
     }
   }]);
 
@@ -180,6 +228,11 @@ var ConstantType = function () {
     key: 'toString',
     value: function toString() {
       return 'Constant(' + this.render() + ')';
+    }
+  }, {
+    key: 'equals',
+    value: function equals$$1(o) {
+      return o instanceof ConstantType && equals(this.constant, o.constant);
     }
   }]);
 
@@ -263,7 +316,7 @@ var parseObject = function parseObject(node) {
   if (node.additionalProperties === false) {
     return type;
   } else {
-    return new UnionType(type, new SimpleType('Object'));
+    return new UnsealedObjectType(type);
   }
 };
 

@@ -1,8 +1,10 @@
 // @flow
+import { equals } from 'ramda';
 
 export interface TypeExpression {
   render(): string;
   toString(): string;
+  equals(o: any): boolean;
 }
 
 export class SimpleType implements TypeExpression {
@@ -18,6 +20,10 @@ export class SimpleType implements TypeExpression {
 
   toString() {
     return `SimpleType(${this.typeName})`;
+  }
+
+  equals(o: any) {
+    return o instanceof SimpleType && equals(this.typeName, o.typeName);
   }
 }
 
@@ -39,6 +45,10 @@ export class UnionType implements TypeExpression {
       .map(childType => childType.toString())
       .join(', ')})`;
   }
+
+  equals(o: any) {
+    return o instanceof UnionType && equals(this.childTypes, o.childTypes);
+  }
 }
 
 export class EnumType implements TypeExpression {
@@ -59,6 +69,10 @@ export class EnumType implements TypeExpression {
       .map(childType => childType.toString())
       .join(', ')})`;
   }
+
+  equals(o: any) {
+    return o instanceof EnumType && equals(this.childTypes, o.childTypes);
+  }
 }
 
 export class ArrayType implements TypeExpression {
@@ -75,6 +89,10 @@ export class ArrayType implements TypeExpression {
   toString() {
     return `Array(${this.itemType.toString()})`;
   }
+
+  equals(o: any) {
+    return o instanceof ArrayType && equals(this.itemType, o.itemType);
+  }
 }
 
 export class OptionalType implements TypeExpression {
@@ -90,6 +108,16 @@ export class OptionalType implements TypeExpression {
 
   toString() {
     return `Optional(${this.childType.toString()})`;
+  }
+
+  equals(o: any) {
+    return o instanceof OptionalType && equals(this.childType, o.childType);
+  }
+}
+
+export class UnsealedObjectType extends UnionType {
+  constructor(objectType: ObjectType) {
+    super(objectType, new SimpleType("Object"));
   }
 }
 
@@ -111,6 +139,10 @@ export class ObjectType implements TypeExpression {
       .map(key => `${key}: ${this.properties[key].toString()}`)
       .join(', ')})`;
   }
+
+  equals(o: any) {
+    return o instanceof ObjectType && equals(this.properties, o.properties);
+  }
 }
 
 export class ConstantType implements TypeExpression {
@@ -130,5 +162,9 @@ export class ConstantType implements TypeExpression {
 
   toString() {
     return `Constant(${this.render()})`;
+  }
+
+  equals(o: any) {
+    return o instanceof ConstantType && equals(this.constant, o.constant);
   }
 }

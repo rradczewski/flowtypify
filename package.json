@@ -25,7 +25,7 @@
     "dist"
   ],
   "author": "Raimo Radczewski <raimoradczewski@googlemail.com>",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/rradczewski/flowtypify/issues"
   },
