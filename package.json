@@ -50,6 +50,7 @@
   "dependencies": {
     "babel-polyfill": "^6.26.0",
     "prettier": "^1.7.4",
+    "ramda": "^0.25.0",
     "yargs": "^9.0.1"
   }
 }
