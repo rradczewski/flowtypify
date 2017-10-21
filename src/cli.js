@@ -23,9 +23,9 @@ args.files.forEach(file => {
   const types = generateTypes(jsonSchema);
   const formatted = formatTypes(types, args.pretty);
 
-  if(args.write) {
-    fs.writeFileSync(file+'.flow.js', formatted);
-    console.log('✔️ '+file);
+  if (args.write) {
+    fs.writeFileSync(file + '.flow.js', '// @flow\n' + formatted);
+    console.log('✔️ ' + file);
   } else {
     console.log(formatted);
   }

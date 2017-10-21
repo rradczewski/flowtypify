@@ -1,9 +1,10 @@
 // @flow
+
 import prettier from 'prettier';
-import type { TypeExpression } from './parse';
+import type { TypeExpression } from './types';
 
 export const formatTypeExpression = (type: TypeExpression): string =>
-  type.toString();
+  type.render();
 
 export const formatTypes = (
   types: { [string]: TypeExpression },

@@ -1,39 +1,15 @@
 // @flow
-export type TypeExpression = {
-  toString: () => string
-};
 
-const SimpleType = (type: string): TypeExpression => ({ toString: () => type });
-const UnionType = (...elements): TypeExpression => ({
-  toString: () =>
-    elements.length === 1
-      ? elements[0].toString()
-      : `(${elements.map(element => element.toString()).join(' & ')})`
-});
-const EnumType = (...elements: Array<TypeExpression>): TypeExpression => ({
-  toString: () =>
-    elements.length === 1
-      ? elements[0].toString()
-      : `(${elements.map(element => element.toString()).join(' | ')})`
-});
-const ArrayType = (itemType: TypeExpression): TypeExpression => ({
-  toString: () => `Array<${itemType.toString()}>`
-});
-const OptionalType = (type: TypeExpression): TypeExpression => ({
-  toString: () => `?${type.toString()}`
-});
-const ComplexType = (type: { [string]: TypeExpression }): TypeExpression => ({
-  toString: () =>
-    `{ ${Object.keys(type)
-      .map(key => `${key}: ${type[key].toString()}`)
-      .join(', ')} }`
-});
-const StringConstant = (constant: string): TypeExpression => ({
-  toString: () => `"${constant}"`
-});
-const NumericConstant = (constant: Number): TypeExpression => ({
-  toString: () => String(constant)
-});
+import type { TypeExpression } from './types';
+import {
+  SimpleType,
+  UnionType,
+  EnumType,
+  ArrayType,
+  OptionalType,
+  ObjectType,
+  ConstantType
+} from './types';
 
 const hasKeys = objOrUndefined =>
   typeof objOrUndefined === 'object' && Object.keys(objOrUndefined).length > 0;
@@ -55,10 +31,10 @@ export const generateTypes = (
 
 const DEFINITIONS_REF = /^#\/definitions\/([^\/]+)$/;
 const resolveRef = (node: Object): TypeExpression => {
-  if (node.$ref === '#/') return SimpleType('RootType');
+  if (node.$ref === '#/') return new SimpleType('RootType');
   const definition = DEFINITIONS_REF.exec(node.$ref);
   if (definition != null && definition[1] != null)
-    return SimpleType(definition[1]);
+    return new SimpleType(definition[1]);
 
   throw new Error('Can not resolve ref ' + node.$ref);
 };
@@ -69,7 +45,7 @@ const parseObject = (node: Object): TypeExpression => {
     !Array.isArray(node.required) &&
     node.additionalProperties !== false
   )
-    return SimpleType('Object');
+    return new SimpleType('Object');
 
   const complexType = {};
   for (const key in node.properties) {
@@ -84,38 +60,31 @@ const parseObject = (node: Object): TypeExpression => {
   if (Array.isArray(node.required)) {
     for (const key of node.required) {
       if (!complexType.hasOwnProperty(key)) {
-        complexType[key] = SimpleType('any');
+        complexType[key] = new SimpleType('any');
       }
     }
   }
 
-  const type = ComplexType(complexType);
+  const type = new ObjectType(complexType);
   if (node.additionalProperties === false) {
     return type;
   } else {
-    return UnionType(type, SimpleType('Object'));
+    return new UnionType(type, new SimpleType('Object'));
   }
 };
 
 const parsePrimitive = (node: Object): TypeExpression => {
   if (Array.isArray(node.enum) && node.enum.length > 0) {
-    return EnumType(
-      ...node.enum.map(
-        enumVal =>
-          typeof enumVal === 'string'
-            ? StringConstant(enumVal)
-            : NumericConstant(enumVal)
-      )
-    );
+    return new EnumType(...node.enum.map(enumVal => new ConstantType(enumVal)));
   }
-  if (node.type === 'integer') return SimpleType('number');
-  if (typeof node.format === 'string') return SimpleType('string');
+  if (node.type === 'integer') return new SimpleType('number');
+  if (typeof node.format === 'string') return new SimpleType('string');
 
-  return SimpleType(node.type);
+  return new SimpleType(node.type);
 };
 
 const parseArray = (node: Object): TypeExpression => {
-  return ArrayType(parseNode(node.items));
+  return new ArrayType(parseNode(node.items));
 };
 
 const parseNode = (node: Object): TypeExpression => {
@@ -132,13 +101,13 @@ const parseNode = (node: Object): TypeExpression => {
     const baseType = parseNode(baseNode);
 
     const withAllOf = Array.isArray(node.allOf)
-      ? UnionType(baseType, ...node.allOf.map(parseNode))
+      ? new UnionType(baseType, ...node.allOf.map(parseNode))
       : baseType;
     const withAnyOf = Array.isArray(node.anyOf)
-      ? UnionType(withAllOf, EnumType(...node.anyOf.map(parseNode)))
+      ? new UnionType(withAllOf, new EnumType(...node.anyOf.map(parseNode)))
       : withAllOf;
     const withOneOf = Array.isArray(node.oneOf)
-      ? UnionType(withAnyOf, EnumType(...node.oneOf.map(parseNode)))
+      ? new UnionType(withAnyOf, new EnumType(...node.oneOf.map(parseNode)))
       : withAnyOf;
 
     return withOneOf;
