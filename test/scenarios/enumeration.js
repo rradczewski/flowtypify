@@ -1,3 +1,3 @@
 export default {
-  RootType: "\"foo\" | \"bar\""
+  RootType: "(\"foo\" | \"bar\")"
 }

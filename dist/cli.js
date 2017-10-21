@@ -1,6 +1,9 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var fs = _interopDefault(require('fs'));
+var prettier = _interopDefault(require('prettier'));
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -187,4 +190,10 @@ var parseNode = function parseNode(node) {
   return parseObject(node);
 };
 
-exports.generateTypes = generateTypes;
+var jsonFile = JSON.parse(fs.readFileSync(process.argv[2]));
+
+var types = generateTypes(jsonFile);
+
+console.log(prettier.format(Object.keys(types).map(function (type) {
+  return 'export type ' + type + ' = ' + types[type] + ';';
+}).join('\n'), { parser: 'flow' }));

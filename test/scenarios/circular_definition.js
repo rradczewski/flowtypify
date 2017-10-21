@@ -1,4 +1,4 @@
 export default {
   RootType: 'Node',
-  Node: '{ parent?: Node } & Object'
+  Node: '({ parent?: Node } & Object)'
 };

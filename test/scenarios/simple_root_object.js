@@ -1,3 +1,3 @@
 export default {
-  RootType: "{ prop?: string } & Object"
+  RootType: "({ prop?: string } & Object)"
 }

@@ -1,4 +1,4 @@
 export default {
-  RootType: '{ definedProp?: ACustomType } & Object',
+  RootType: '({ definedProp?: ACustomType } & Object)',
   ACustomType: 'string'
 };

@@ -4,17 +4,20 @@ type TypeExpression = {
 };
 
 const SimpleType = (type: string): TypeExpression => ({ toString: () => type });
-const UnionType = (
-  left: TypeExpression,
-  right: TypeExpression
-): TypeExpression => ({
-  toString: () => `${left.toString()} & ${right.toString()}`
+const UnionType = (...elements): TypeExpression => ({
+  toString: () =>
+    elements.length === 1
+      ? elements[0].toString()
+      : `(${elements.map(element => element.toString()).join(' & ')})`
+});
+const EnumType = (...elements: Array<TypeExpression>): TypeExpression => ({
+  toString: () =>
+    elements.length === 1
+      ? elements[0].toString()
+      : `(${elements.map(element => element.toString()).join(' | ')})`
 });
 const ArrayType = (itemType: TypeExpression): TypeExpression => ({
   toString: () => `Array<${itemType.toString()}>`
-});
-const EnumType = (...constants: Array<TypeExpression>): TypeExpression => ({
-  toString: () => constants.map(constant => constant.toString()).join(' | ')
 });
 const OptionalType = (type: TypeExpression): TypeExpression => ({
   toString: () => `?${type.toString()}`
@@ -61,7 +64,7 @@ const resolveRef = (node: Object): TypeExpression => {
 const parseObject = (node: Object): TypeExpression => {
   if (
     !hasKeys(node.properties) &&
-    !hasKeys(node.required) &&
+    !Array.isArray(node.required) &&
     node.additionalProperties !== false
   )
     return SimpleType('Object');
@@ -73,6 +76,14 @@ const parseObject = (node: Object): TypeExpression => {
       complexType[key] = resolvedPropType;
     } else {
       complexType[key + '?'] = resolvedPropType;
+    }
+  }
+
+  if (Array.isArray(node.required)) {
+    for (const key of node.required) {
+      if (!complexType.hasOwnProperty(key)) {
+        complexType[key] = SimpleType('any');
+      }
     }
   }
 
@@ -95,6 +106,9 @@ const parsePrimitive = (node: Object): TypeExpression => {
       )
     );
   }
+  if (node.type === 'integer') return SimpleType('number');
+  if (typeof node.format === 'string') return SimpleType('string');
+
   return SimpleType(node.type);
 };
 
@@ -104,18 +118,48 @@ const parseArray = (node: Object): TypeExpression => {
 
 const parseNode = (node: Object): TypeExpression => {
   if (typeof node.$ref === 'string') return resolveRef(node);
+  if (
+    Array.isArray(node.allOf) ||
+    Array.isArray(node.anyOf) ||
+    Array.isArray(node.oneOf)
+  ) {
+    const baseNode = Object.assign({}, node);
+    delete baseNode.allOf;
+    delete baseNode.anyOf;
+    delete baseNode.oneOf;
+    const baseType = parseNode(baseNode);
 
-  if (node.type != null) {
-    if (
-      node.type === 'string' ||
-      node.enum === 'enum' ||
-      node.type === 'number'
-    )
-      return parsePrimitive(node);
-    if (node.type === 'object') return parseObject(node);
-    if (node.type === 'array') return parseArray(node);
+    const withAllOf = Array.isArray(node.allOf)
+      ? UnionType(baseType, ...node.allOf.map(parseNode))
+      : baseType;
+    const withAnyOf = Array.isArray(node.anyOf)
+      ? UnionType(withAllOf, EnumType(...node.anyOf.map(parseNode)))
+      : withAllOf;
+    const withOneOf = Array.isArray(node.oneOf)
+      ? UnionType(withAnyOf, EnumType(...node.oneOf.map(parseNode)))
+      : withAnyOf;
+
+    return withOneOf;
   }
 
+  if (
+    node.type === 'object' ||
+    hasKeys(node.properties) ||
+    Array.isArray(node.required)
+  )
+    return parseObject(node);
+
+  if (
+    node.type === 'string' ||
+    node.type === 'boolean' ||
+    node.type === 'integer' ||
+    typeof node.format === 'string' ||
+    Array.isArray(node.enum) ||
+    node.type === 'number'
+  )
+    return parsePrimitive(node);
+  if (node.type === 'array') return parseArray(node);
+
   if (Array.isArray(node.enum)) return parsePrimitive(node);
-  throw new Error('Cannot handle ' + JSON.stringify(node));
+  return parseObject(node);
 };

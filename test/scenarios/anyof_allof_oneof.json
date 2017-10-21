@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "type": "object",
+  "properties": {
+    "anyOfProp": {
+      "anyOf": [
+        { "type": "string" },
+        {
+          "type": "object",
+          "properties": {
+            "reqProp": "string"
+          },
+          "required": ["reqProp"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "allOfProp": {
+      "allOf": [
+        { "required": ["anotherReqProp1"] },
+        { "required": ["anotherReqProp2"] }
+      ],
+      "required": ["aRequiredProp"]
+    }
+  }
+}
