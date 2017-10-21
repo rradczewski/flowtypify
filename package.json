@@ -1,6 +1,6 @@
 {
   "name": "flowtypify",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Generate flowtype definitions from JSON Schemata",
   "bin": "dist/cli.js",
   "main": "dist/index.js",
