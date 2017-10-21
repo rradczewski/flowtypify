@@ -6,14 +6,15 @@
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "scripts": {
-    "build": "npm-run-all -s test flow build:clean build:js build:flow",
+    "build": "npm-run-all -s test build:clean build:js build:flow",
     "build:js": "rollup -c",
     "build:clean": "rimraf dist",
     "build:flow": "flow-copy-source -v src dist",
     "watch:build": "rollup -c -w",
     "watch:flow": "nodemon -w src --exec yarn flow -- check",
     "flow": "flow",
-    "test": "jest"
+    "test:js": "jest",
+    "test": "npm-run-all -s test:js flow"
   },
   "repository": {
     "type": "git",
