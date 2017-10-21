@@ -115,6 +115,12 @@ export class OptionalType implements TypeExpression {
   }
 }
 
+export class UnsealedObjectType extends UnionType {
+  constructor(objectType: ObjectType) {
+    super(objectType, new SimpleType("Object"));
+  }
+}
+
 export class ObjectType implements TypeExpression {
   properties: { [string]: TypeExpression };
 

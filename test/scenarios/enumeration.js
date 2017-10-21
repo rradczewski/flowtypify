@@ -1,3 +1,5 @@
+import { EnumType, ConstantType } from '../../src/types';
+
 export default {
-  RootType: "(\"foo\" | \"bar\")"
+  RootType: new EnumType(new ConstantType("foo"), new ConstantType("bar"))
 }

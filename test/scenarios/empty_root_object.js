@@ -1,3 +1,5 @@
+import { SimpleType } from '../../src/types';
+
 export default {
-  RootType: "Object"
-}
+  RootType: new SimpleType('Object')
+};
