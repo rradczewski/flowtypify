@@ -8,7 +8,7 @@ export default [
       { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'es' }
     ],
-    external: ['fs', 'yargs', 'prettier'],
+    external: ['fs', 'babel-polyfill', 'ramda', 'yargs', 'prettier'],
     plugins: [
       babel({
         exclude: ['node_modules/**']
@@ -18,7 +18,7 @@ export default [
   {
     input: 'src/cli.js',
     output: [{ file: pkg.bin, format: 'cjs', banner: '#!/usr/bin/env node' }],
-    external: ['fs', 'yargs', 'prettier'],
+    external: ['fs', 'babel-polyfill', 'ramda', 'yargs', 'prettier'],
     plugins: [
       babel({
         exclude: ['node_modules/**']

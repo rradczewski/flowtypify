@@ -7,6 +7,7 @@ import {
   EnumType,
   ArrayType,
   OptionalType,
+  UnsealedObjectType,
   ObjectType,
   ConstantType
 } from './types';
@@ -69,7 +70,7 @@ const parseObject = (node: Object): TypeExpression => {
   if (node.additionalProperties === false) {
     return type;
   } else {
-    return new UnionType(type, new SimpleType('Object'));
+    return new UnsealedObjectType(type);
   }
 };
 
