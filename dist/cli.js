@@ -3,6 +3,7 @@
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var fs = _interopDefault(require('fs'));
+var yargs = _interopDefault(require('yargs'));
 var prettier = _interopDefault(require('prettier'));
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -82,9 +83,9 @@ var contains = function contains(value, arrayOrUndefined) {
 var generateTypes = function generateTypes(jsonSchema) {
   var RootType = parseNode(jsonSchema);
 
-  var types = { RootType: RootType.toString() };
+  var types = { RootType: RootType };
   for (var typeName in jsonSchema.definitions) {
-    types[typeName] = parseNode(jsonSchema.definitions[typeName]).toString();
+    types[typeName] = parseNode(jsonSchema.definitions[typeName]);
   }
 
   return types;
@@ -190,10 +191,45 @@ var parseNode = function parseNode(node) {
   return parseObject(node);
 };
 
-var jsonFile = JSON.parse(fs.readFileSync(process.argv[2]));
+var formatTypeExpression = function formatTypeExpression(type) {
+  return type.toString();
+};
 
-var types = generateTypes(jsonFile);
+var formatTypes = function formatTypes(types) {
+  var pretty = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-console.log(prettier.format(Object.keys(types).map(function (type) {
-  return 'export type ' + type + ' = ' + types[type] + ';';
-}).join('\n'), { parser: 'flow' }));
+  var result = Object.keys(types).map(function (type) {
+    return 'export type ' + type + ' = ' + formatTypeExpression(types[type]);
+  }).join('\n');
+
+  if (pretty) {
+    return prettier.format(result, { parser: 'flow' });
+  } else {
+    return result;
+  }
+};
+
+var args = yargs.command(['generate [files..]', '*'], 'generate types from json schemas').option('write', {
+  describe: 'write types to file',
+  type: 'boolean',
+  default: false,
+  alias: 'w'
+}).option('pretty', {
+  describe: 'pretty-print types',
+  type: 'boolean',
+  default: true,
+  alias: 'p'
+}).help().argv;
+
+args.files.forEach(function (file) {
+  var jsonSchema = JSON.parse(fs.readFileSync(file));
+  var types = generateTypes(jsonSchema);
+  var formatted = formatTypes(types, args.pretty);
+
+  if (args.write) {
+    fs.writeFileSync(file + '.flow.js', formatted);
+    console.log('✔️ ' + file);
+  } else {
+    console.log(formatted);
+  }
+});

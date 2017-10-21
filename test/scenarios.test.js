@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { generateTypes } from '../src';
+import { generateTypes, formatTypeExpression } from '../src';
 
 const fixtures = fs
   .readdirSync(path.join(__dirname, 'scenarios'))
@@ -18,6 +18,13 @@ const fixtures = fs
 describe('Scenarios from test/scenarios', () =>
   fixtures.forEach(fixture =>
     it(`correctly parses ${fixture.name}`, () => {
-      expect(generateTypes(fixture.jsonSchema)).toEqual(fixture.expectedOutput);
+
+      const types = generateTypes(fixture.jsonSchema);
+      const typesStr = {};
+      for(const type in types) {
+        typesStr[type] = formatTypeExpression(types[type]);
+      }
+
+      expect(typesStr).toEqual(fixture.expectedOutput);
     })
   ));

@@ -8,7 +8,7 @@ export default [
       { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'es' }
     ],
-    external: ['fs', 'prettier'],
+    external: ['fs', 'yargs', 'prettier'],
     plugins: [
       babel({
         exclude: ['node_modules/**']
@@ -20,7 +20,7 @@ export default [
     output: [
       { file: pkg.bin, format: 'cjs' }
     ],
-    external: ['fs', 'prettier'],
+    external: ['fs', 'yargs', 'prettier'],
     plugins: [
       babel({
         exclude: ['node_modules/**']

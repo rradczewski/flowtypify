@@ -6,6 +6,7 @@
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "scripts": {
+    "start": "babel-node src/cli.js",
     "build": "npm-run-all -s test build:clean build:js build:flow",
     "build:js": "rollup -c",
     "build:clean": "rimraf dist",
@@ -30,6 +31,7 @@
   },
   "homepage": "https://github.com/rradczewski/flowtypify#readme",
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-jest": "^21.2.0",
     "babel-plugin-syntax-flow": "^6.18.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
@@ -48,6 +50,7 @@
     "rollup-plugin-node-resolve": "^3.0.0"
   },
   "dependencies": {
-    "prettier": "^1.7.4"
+    "prettier": "^1.7.4",
+    "yargs": "^9.0.1"
   }
 }

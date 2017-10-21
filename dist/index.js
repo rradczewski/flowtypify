@@ -2,6 +2,10 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
+function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+
+var prettier = _interopDefault(require('prettier'));
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -79,9 +83,9 @@ var contains = function contains(value, arrayOrUndefined) {
 var generateTypes = function generateTypes(jsonSchema) {
   var RootType = parseNode(jsonSchema);
 
-  var types = { RootType: RootType.toString() };
+  var types = { RootType: RootType };
   for (var typeName in jsonSchema.definitions) {
-    types[typeName] = parseNode(jsonSchema.definitions[typeName]).toString();
+    types[typeName] = parseNode(jsonSchema.definitions[typeName]);
   }
 
   return types;
@@ -187,4 +191,24 @@ var parseNode = function parseNode(node) {
   return parseObject(node);
 };
 
+var formatTypeExpression = function formatTypeExpression(type) {
+  return type.toString();
+};
+
+var formatTypes = function formatTypes(types) {
+  var pretty = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+  var result = Object.keys(types).map(function (type) {
+    return 'export type ' + type + ' = ' + formatTypeExpression(types[type]);
+  }).join('\n');
+
+  if (pretty) {
+    return prettier.format(result, { parser: 'flow' });
+  } else {
+    return result;
+  }
+};
+
 exports.generateTypes = generateTypes;
+exports.formatTypeExpression = formatTypeExpression;
+exports.formatTypes = formatTypes;

@@ -1,16 +1,32 @@
 import fs from 'fs';
-import prettier from 'prettier';
-import { generateTypes } from './index';
+import yargs from 'yargs';
+import { generateTypes, formatTypes } from './index';
 
-const jsonFile = JSON.parse(fs.readFileSync(process.argv[2]));
+const args = yargs
+  .command(['generate [files..]', '*'], 'generate types from json schemas')
+  .option('write', {
+    describe: 'write types to file',
+    type: 'boolean',
+    default: false,
+    alias: 'w'
+  })
+  .option('pretty', {
+    describe: 'pretty-print types',
+    type: 'boolean',
+    default: true,
+    alias: 'p'
+  })
+  .help().argv;
 
-const types = generateTypes(jsonFile);
+args.files.forEach(file => {
+  const jsonSchema = JSON.parse(fs.readFileSync(file));
+  const types = generateTypes(jsonSchema);
+  const formatted = formatTypes(types, args.pretty);
 
-console.log(
-  prettier.format(
-    Object.keys(types)
-      .map(type => `export type ${type} = ${types[type]};`)
-      .join('\n'),
-    { parser: 'flow' }
-  )
-);
+  if(args.write) {
+    fs.writeFileSync(file+'.flow.js', formatted);
+    console.log('✔️ '+file);
+  } else {
+    console.log(formatted);
+  }
+});
