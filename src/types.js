@@ -2,6 +2,7 @@
 
 export interface TypeExpression {
   render(): string;
+  toString(): string;
 }
 
 export class SimpleType implements TypeExpression {
@@ -13,6 +14,10 @@ export class SimpleType implements TypeExpression {
 
   render() {
     return this.typeName;
+  }
+
+  toString() {
+    return `SimpleType(${this.typeName})`;
   }
 }
 
@@ -28,6 +33,12 @@ export class UnionType implements TypeExpression {
       ? this.childTypes[0].render()
       : `(${this.childTypes.map(childType => childType.render()).join(' & ')})`;
   }
+
+  toString() {
+    return `UnionType(${this.childTypes
+      .map(childType => childType.toString())
+      .join(', ')})`;
+  }
 }
 
 export class EnumType implements TypeExpression {
@@ -42,6 +53,12 @@ export class EnumType implements TypeExpression {
       ? this.childTypes[0].render()
       : `(${this.childTypes.map(childType => childType.render()).join(' | ')})`;
   }
+
+  toString() {
+    return `EnumType(${this.childTypes
+      .map(childType => childType.toString())
+      .join(', ')})`;
+  }
 }
 
 export class ArrayType implements TypeExpression {
@@ -54,6 +71,10 @@ export class ArrayType implements TypeExpression {
   render() {
     return `Array<${this.itemType.render()}>`;
   }
+
+  toString() {
+    return `Array(${this.itemType.toString()})`;
+  }
 }
 
 export class OptionalType implements TypeExpression {
@@ -65,6 +86,10 @@ export class OptionalType implements TypeExpression {
 
   render() {
     return `?${this.childType.render()}`;
+  }
+
+  toString() {
+    return `Optional(${this.childType.toString()})`;
   }
 }
 
@@ -79,6 +104,12 @@ export class ObjectType implements TypeExpression {
     return `{ ${Object.keys(this.properties)
       .map(key => `${key}: ${this.properties[key].render()}`)
       .join(', ')} }`;
+  }
+
+  toString() {
+    return `Object(${Object.keys(this.properties)
+      .map(key => `${key}: ${this.properties[key].toString()}`)
+      .join(', ')})`;
   }
 }
 
@@ -95,5 +126,9 @@ export class ConstantType implements TypeExpression {
     } else {
       return String(this.constant);
     }
+  }
+
+  toString() {
+    return `Constant(${this.render()})`;
   }
 }
