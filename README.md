@@ -17,6 +17,7 @@ Invoking `fowtypify` will parse the JSON schemas and output the types to `STDOUT
 npm install --save-dev flowtypify
 ./node_modules/.bin/flowtypify --write src/schematas/*.json
 ```
+![Example Screenshot](example.png)
 
 ## FAQ
 
