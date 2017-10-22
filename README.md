@@ -35,3 +35,8 @@ Everything in [test/scenarios](test/scenarios) works, the following does not wor
   - [ ] Change `RootType` name
   - [ ] Transform Type names (e.g. uppercase)
   - [ ] Custom transformations (e.g. `Optional<*>` types)
+
+## Similar or related libraries
+
+- [`json-schema-to-flow-type`](https://github.com/dannynelson/json-schema-to-flow-type) by @dannynelson
+- [`json-schema-to-typescript`](https://github.com/bcherny/json-schema-to-typescript/) by @bcherny
