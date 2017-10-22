@@ -5,7 +5,7 @@
 
 # Flowtypify - Generate Flowtype Definitions from JSON Schemas
 
-`Flowtypify` generates flowtype definitions from a given JSON Schema. This enables you to type-check the contract your app is working against. Whenever you update the schema, regenerate the flowtype definitions and flow will tell you about breaking changes.
+`flowtypify` generates flowtype definitions from a given JSON Schema. This enables you to type-check the contract your app is working against. Whenever you update the schema, regenerate the flowtype definitions and flow will tell you about breaking changes.
 
 Version-wise its an early Proof of Concept, but the [testsuite](test/scenarios/) already covers most of the features I've seen in the wild so far.
 
@@ -29,8 +29,9 @@ Yepp, that's, apart from the lack of any optimizations in `flowtypify`, due to y
 
 Everything in [test/scenarios](test/scenarios) works, the following does not work, yet ;)
 
+- [ ] Resolve external `$ref` links
+- [ ] Resolve definitions through `$id` fields (no support for `$id` as of [JSON Schema Core 9.2](http://json-schema.org/latest/json-schema-core.html#id-keyword) at all, yet)
 - [ ] Transformations
   - [ ] Change `RootType` name
   - [ ] Transform Type names (e.g. uppercase)
   - [ ] Custom transformations (e.g. `Optional<*>` types)
-- [ ] Resolve external `$ref` links
