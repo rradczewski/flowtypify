@@ -85,6 +85,9 @@ const parsePrimitive = (node: Object): TypeExpression => {
 };
 
 const parseArray = (node: Object): TypeExpression => {
+  if (node.items == null) {
+    return new ArrayType(new SimpleType('any'));
+  }
   return new ArrayType(parseNode(node.items));
 };
 

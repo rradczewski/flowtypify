@@ -340,6 +340,9 @@ var parsePrimitive = function parsePrimitive(node) {
 };
 
 var parseArray = function parseArray(node) {
+  if (node.items == null) {
+    return new ArrayType(new SimpleType('any'));
+  }
   return new ArrayType(parseNode(node.items));
 };
 
