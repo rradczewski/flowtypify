@@ -15,15 +15,16 @@
     "watch:flow": "nodemon -w src --exec yarn flow -- check",
     "flow": "flow",
     "test:js": "jest",
-    "test": "npm-run-all -s test:js flow"
+    "test": "npm-run-all -s test:js flow",
+    "preversion": "npm test",
+    "version": "npm run build && git add -A dist",
+    "postversion": "git push origin && git push origin --tags"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rradczewski/flowtypify.git"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "author": "Raimo Radczewski <raimoradczewski@googlemail.com>",
   "license": "Apache-2.0",
   "bugs": {
