@@ -9,7 +9,6 @@
       "env",
       {
         "targets": {
-          "browsers": ["last 2 versions"],
           "node": "v4.8.4"
         },
         "modules": false
@@ -28,7 +27,6 @@
           "env",
           {
             "targets": {
-              "browsers": ["last 2 versions"],
               "node": "v4.8.4"
             },
             "modules": "commonjs"
