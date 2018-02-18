@@ -6,10 +6,10 @@ Good example for a schema that could use optimization techniques:
 
 export default {
   RootType:
-    '({ storage: (Object & (diskDevice | diskUUID | nfs | tmpfs)), fstype?: ("ext3" | "ext4" | "btrfs"), options?: Array<string>, readonly?: boolean } & Object)',
-  diskDevice: '{ type: "disk", device: string }',
-  diskUUID: '{ type: "disk", label: string }',
-  nfs:
+    '({ storage: (Object & (DiskDevice | DiskUuid | Nfs | Tmpfs)), fstype?: ("ext3" | "ext4" | "btrfs"), options?: Array<string>, readonly?: boolean } & Object)',
+  DiskDevice: '{ type: "disk", device: string }',
+  DiskUuid: '{ type: "disk", label: string }',
+  Nfs:
     '{ type: "nfs", remotePath: string, server: (string & (string | string | string)) }',
-  tmpfs: '{ type: "tmpfs", sizeInMB: number }'
+  Tmpfs: '{ type: "tmpfs", sizeInMB: number }'
 };

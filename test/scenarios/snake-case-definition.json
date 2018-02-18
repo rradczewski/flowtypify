@@ -1,0 +1,10 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "type": "object",
+  "properties": {
+  },
+  "definitions": {
+    "a-type-that-should-be-camel-cased": {},
+    "looks_bad_in_js_too": {}
+  }
+}
