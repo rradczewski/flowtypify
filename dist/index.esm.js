@@ -1,7 +1,7 @@
-import 'babel-polyfill';
-import UpperCamelCase from 'uppercamelcase';
 import { equals } from 'ramda';
+import UpperCamelCase from 'uppercamelcase';
 import prettier from 'prettier';
+import 'babel-polyfill';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -26,7 +26,7 @@ var SimpleType = function () {
   }, {
     key: 'toString',
     value: function toString() {
-      return 'SimpleType(' + this.typeName + ')';
+      return `SimpleType(${this.typeName})`;
     }
   }, {
     key: 'equals',
@@ -52,16 +52,16 @@ var UnionType = function () {
   _createClass(UnionType, [{
     key: 'render',
     value: function render() {
-      return this.childTypes.length === 1 ? this.childTypes[0].render() : '(' + this.childTypes.map(function (childType) {
+      return this.childTypes.length === 1 ? this.childTypes[0].render() : `(${this.childTypes.map(function (childType) {
         return childType.render();
-      }).join(' & ') + ')';
+      }).join(' & ')})`;
     }
   }, {
     key: 'toString',
     value: function toString() {
-      return 'UnionType(' + this.childTypes.map(function (childType) {
+      return `UnionType(${this.childTypes.map(function (childType) {
         return childType.toString();
-      }).join(', ') + ')';
+      }).join(', ')})`;
     }
   }, {
     key: 'equals',
@@ -87,16 +87,16 @@ var EnumType = function () {
   _createClass(EnumType, [{
     key: 'render',
     value: function render() {
-      return this.childTypes.length === 1 ? this.childTypes[0].render() : '(' + this.childTypes.map(function (childType) {
+      return this.childTypes.length === 1 ? this.childTypes[0].render() : `(${this.childTypes.map(function (childType) {
         return childType.render();
-      }).join(' | ') + ')';
+      }).join(' | ')})`;
     }
   }, {
     key: 'toString',
     value: function toString() {
-      return 'EnumType(' + this.childTypes.map(function (childType) {
+      return `EnumType(${this.childTypes.map(function (childType) {
         return childType.toString();
-      }).join(', ') + ')';
+      }).join(', ')})`;
     }
   }, {
     key: 'equals',
@@ -118,12 +118,12 @@ var ArrayType = function () {
   _createClass(ArrayType, [{
     key: 'render',
     value: function render() {
-      return 'Array<' + this.itemType.render() + '>';
+      return `Array<${this.itemType.render()}>`;
     }
   }, {
     key: 'toString',
     value: function toString() {
-      return 'Array(' + this.itemType.toString() + ')';
+      return `Array(${this.itemType.toString()})`;
     }
   }, {
     key: 'equals',
@@ -145,12 +145,12 @@ var OptionalType = function () {
   _createClass(OptionalType, [{
     key: 'render',
     value: function render() {
-      return '?' + this.childType.render();
+      return `?${this.childType.render()}`;
     }
   }, {
     key: 'toString',
     value: function toString() {
-      return 'Optional(' + this.childType.toString() + ')';
+      return `Optional(${this.childType.toString()})`;
     }
   }, {
     key: 'equals',
@@ -186,18 +186,18 @@ var ObjectType = function () {
     value: function render() {
       var _this2 = this;
 
-      return '{ ' + Object.keys(this.properties).map(function (key) {
-        return key + ': ' + _this2.properties[key].render();
-      }).join(', ') + ' }';
+      return `{ ${Object.keys(this.properties).map(function (key) {
+        return `${key}: ${_this2.properties[key].render()}`;
+      }).join(', ')} }`;
     }
   }, {
     key: 'toString',
     value: function toString() {
       var _this3 = this;
 
-      return 'Object(' + Object.keys(this.properties).map(function (key) {
-        return key + ': ' + _this3.properties[key].toString();
-      }).join(', ') + ')';
+      return `Object(${Object.keys(this.properties).map(function (key) {
+        return `${key}: ${_this3.properties[key].toString()}`;
+      }).join(', ')})`;
     }
   }, {
     key: 'equals',
@@ -220,7 +220,7 @@ var ConstantType = function () {
     key: 'render',
     value: function render() {
       if (typeof this.constant === 'string') {
-        return '"' + this.constant + '"';
+        return `"${this.constant}"`;
       } else {
         return String(this.constant);
       }
@@ -228,7 +228,7 @@ var ConstantType = function () {
   }, {
     key: 'toString',
     value: function toString() {
-      return 'Constant(' + this.render() + ')';
+      return `Constant(${this.render()})`;
     }
   }, {
     key: 'equals',
@@ -240,12 +240,10 @@ var ConstantType = function () {
   return ConstantType;
 }();
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var hasKeys = function hasKeys(objOrUndefined) {
-  return (typeof objOrUndefined === 'undefined' ? 'undefined' : _typeof(objOrUndefined)) === 'object' && Object.keys(objOrUndefined).length > 0;
+  return typeof objOrUndefined === 'object' && Object.keys(objOrUndefined).length > 0;
 };
 var contains = function contains(value, arrayOrUndefined) {
   return Array.isArray(arrayOrUndefined) && arrayOrUndefined.includes(value);
@@ -254,7 +252,7 @@ var contains = function contains(value, arrayOrUndefined) {
 var generateTypes = function generateTypes(jsonSchema) {
   var RootType = parseNode(jsonSchema);
 
-  var types = { RootType: RootType };
+  var types = { RootType };
   for (var typeName in jsonSchema.definitions) {
     types[UpperCamelCase(typeName)] = parseNode(jsonSchema.definitions[typeName]);
   }
@@ -373,7 +371,7 @@ var formatTypes = function formatTypes(types) {
   var pretty = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
   var result = Object.keys(types).map(function (type) {
-    return 'export type ' + type + ' = ' + formatTypeExpression(types[type]);
+    return `export type ${type} = ${formatTypeExpression(types[type])}`;
   }).join('\n');
 
   if (pretty) {
