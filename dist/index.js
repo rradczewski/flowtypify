@@ -5,6 +5,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 require('babel-polyfill');
+var UpperCamelCase = _interopDefault(require('uppercamelcase'));
 var ramda = require('ramda');
 var prettier = _interopDefault(require('prettier'));
 
@@ -261,7 +262,7 @@ var generateTypes = function generateTypes(jsonSchema) {
 
   var types = { RootType: RootType };
   for (var typeName in jsonSchema.definitions) {
-    types[typeName] = parseNode(jsonSchema.definitions[typeName]);
+    types[UpperCamelCase(typeName)] = parseNode(jsonSchema.definitions[typeName]);
   }
 
   return types;
@@ -271,7 +272,7 @@ var DEFINITIONS_REF = /^#\/definitions\/([^\/]+)$/;
 var resolveRef = function resolveRef(node) {
   if (node.$ref === '#/') return new SimpleType('RootType');
   var definition = DEFINITIONS_REF.exec(node.$ref);
-  if (definition != null && definition[1] != null) return new SimpleType(definition[1]);
+  if (definition != null && definition[1] != null) return new SimpleType(UpperCamelCase(definition[1]));
 
   throw new Error('Can not resolve ref ' + node.$ref);
 };

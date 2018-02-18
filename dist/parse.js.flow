@@ -1,6 +1,7 @@
 // @flow
 
 import type { TypeExpression } from './types';
+import UpperCamelCase from 'uppercamelcase';
 import {
   SimpleType,
   UnionType,
@@ -24,7 +25,7 @@ export const generateTypes = (
 
   const types = { RootType };
   for (const typeName in jsonSchema.definitions) {
-    types[typeName] = parseNode(jsonSchema.definitions[typeName]);
+    types[UpperCamelCase(typeName)] = parseNode(jsonSchema.definitions[typeName]);
   }
 
   return types;
@@ -35,7 +36,7 @@ const resolveRef = (node: Object): TypeExpression => {
   if (node.$ref === '#/') return new SimpleType('RootType');
   const definition = DEFINITIONS_REF.exec(node.$ref);
   if (definition != null && definition[1] != null)
-    return new SimpleType(definition[1]);
+    return new SimpleType(UpperCamelCase(definition[1]));
 
   throw new Error('Can not resolve ref ' + node.$ref);
 };
