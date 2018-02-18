@@ -1,7 +1,7 @@
 // @flow
+import UpperCamelCase from 'uppercamelcase';
 
 import type { TypeExpression } from './types';
-import UpperCamelCase from 'uppercamelcase';
 import {
   SimpleType,
   UnionType,
