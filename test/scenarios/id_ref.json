@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "type": "object",
+  "properties": {
+    "foo": {
+      "type": "string",
+      "$id": "#another-name"
+    },
+    "bar": {
+      "$ref": "#another-name"
+    }
+  }
+}
